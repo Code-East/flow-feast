@@ -3,9 +3,7 @@
 </script>
 
 <template>
-  <el-button>I am ElButton</el-button>
-  <el-button type="primary">Primary</el-button>
-  <el-icon><Filter /></el-icon>
+  <router-view></router-view>
 </template>
 
 <style scoped>

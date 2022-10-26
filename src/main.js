@@ -5,6 +5,8 @@ import router from './route'
 import { createPinia } from 'pinia'
 import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+// import 'amfe-flexible';
+
 const store = createPinia();
 const app = createApp(App)
 //注册所有icon
