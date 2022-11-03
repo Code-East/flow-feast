@@ -5,3 +5,9 @@ export const get_header_list = () => {
         url:'/index/get_header_list'
     }) 
 }
+
+export const get_aside_data = () => {
+    return request({
+        url:'/index/get_aside_data'
+    }) 
+}

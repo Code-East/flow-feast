@@ -10,7 +10,18 @@ const useIndexStore = defineStore('index', () => {
     async function getHeaderListAction() {
         try {
             const res = await get_header_list();
-            if(res.code === 0){
+            //token失效跳转到login
+            if (res.code == 400) {
+                ElMessageBox.alert("诶,你的令牌呢,赶紧重新登入！", "登入失效", {
+                    confirmButtonText: "OK",
+                    callback: (action) => {
+                        localStorage.clear();
+                        router.push("/login");
+                    },
+                });
+                return;
+            }
+            if (res.code === 0) {
                 //存入列表
                 headerList.value = res.data;
             }

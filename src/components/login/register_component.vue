@@ -103,7 +103,8 @@ const submitForm = formEl => {
       formData.checkPsw = '';
       formData.code = '',
       formData.userType = '0';
-
+      timeCount.value = 60;
+      codeExist.value = false;
     } else {
       if (msg) {
         msg.close();

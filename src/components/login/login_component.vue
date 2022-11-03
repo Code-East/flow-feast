@@ -91,11 +91,20 @@ const loginClick = async formEl => {
             token: res.token
           });
           //将token和userinfo存入浏览器
-          localStorage.setItem('userinfo',res.userinfo);
+          localStorage.setItem('userinfo',JSON.stringify(res.userinfo));
           localStorage.setItem('token',res.token);
           
           //跳转
-          router.push('/index');
+          if(formData.userType === '0'){
+            router.push('/index/feast_team_page');
+          }else if (formData.userType === '1') {
+            router.push('/index/feast_list_page');
+          }else{
+            msg = ElMessage({
+              type:'error',
+              message:'用户类型有误！'
+            })
+          }
         }
       } catch (error) {
         console.log(error);

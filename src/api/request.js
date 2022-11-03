@@ -31,13 +31,7 @@ service.interceptors.response.use(
         const { code, message } = response.data;
         //判断token是否过期 放400过去 到页面去处理
         if (code == 400) {
-            ElMessageBox.alert("诶,你的令牌呢,赶紧重新登入！", "登入失效", {
-                confirmButtonText: "OK",
-                callback: (action) => {
-                    localStorage.clear();
-                    router.replace("/login");
-                },
-            });
+            return response.data;
         }
         //判断后端放回的code 是否正常
         if (code == 0) {
