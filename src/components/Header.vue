@@ -1,12 +1,10 @@
 <script setup>
 import { ref, watch, onUnmounted, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import useIndexStore from "@/store/index_store";
-const store = useIndexStore();
-//调用store中的方法 获取导航列表到store中的headerList中
-store.getHeaderListAction();
-
+import { ElMessageBox } from "element-plus";
+import { useRouter } from "vue-router";
 const router = useRouter();
+const store = useIndexStore();
 
 const ishind = ref(true);
 const iszore = ref(false);
@@ -35,28 +33,41 @@ watch(
   { immediate: true }
 );
 //点击跳转
-const userinfo = JSON.parse(localStorage.getItem('userinfo'));
+const userinfo = JSON.parse(localStorage.getItem("userinfo"));
 const itemClick = item => {
   window.scrollTo(0, 0);
   //判断是否去首页
-  if(item === 'index'){
+  if (item === "index") {
     //根据用户类型跳转指定首页
-    if (userinfo.userType === '0') {
+    if (userinfo.userType === "0") {
       //个人用户
-      router.push('/index/feast_team_page');
-    }else{
-       //团队用户
-       router.push('/index/feast_list_page');
+      router.push("/index/feast_team_page");
+    } else {
+      //团队用户
+      router.push("/index/feast_list_page");
     }
-  }else if (item.path == "/search") {//判断是否是search
+  } else if (item.path == "/search") {
+    //判断是否是search
     dialogVisible.value = true;
   } else {
     router.push(item.path);
   }
 };
 //当组件挂载是让滚动条在顶部
-onMounted(() => {
+onMounted(async () => {
   window.scrollTo(0, 0);
+  //调用store中的方法 获取导航列表到store中的headerList中
+  const toLogin = await store.getHeaderListAction();
+  //判断token是否过期 过期了就是跳转
+  if (toLogin) {
+    ElMessageBox.alert("诶,你的令牌呢,赶紧重新登入！", "登入失效", {
+      confirmButtonText: "OK",
+      callback: action => {
+        localStorage.clear();
+        router.push("/login");
+      }
+    });
+  }
 });
 //当组件卸载是让滚动条在顶部 解绑事件
 onUnmounted(() => {

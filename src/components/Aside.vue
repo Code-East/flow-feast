@@ -13,11 +13,11 @@
       <div class="user_data">
         <div class="user_data_item">
           <span>{{feastTitle}}</span>
-          <span>{{feastCount}}</span>
+          <span>{{store.feastCount}}</span>
         </div>
         <div class="user_data_item">
           <span>{{priceTitle}}</span>
-          <span>{{price}}</span>
+          <span>{{store.price}}</span>
         </div>
       </div>
       <div class="github">
@@ -29,10 +29,12 @@
 </template>
 
 <script setup>
-import { get_aside_data } from "@/api/index";
+
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
+import indexStore from '@/store/index_store'
+const store = indexStore();
 const router = useRouter();
 const userinfo = JSON.parse(localStorage.getItem("userinfo"));
 if (!userinfo) {
@@ -53,15 +55,9 @@ const loginOut = () => {
   //跳转
   router.replace("/login");
 };
-//获取aside所需的数据
-const feastCount = ref(0);
-const price = ref(0);
-get_aside_data()
-  .then(res => {
-    feastCount.value = res.data.feastCount;
-    price.value = res.data.price;
-  })
-  .catch(err => console.log(err));
+
+//获取aside数据
+store.getAsideData();
 </script>
 
 

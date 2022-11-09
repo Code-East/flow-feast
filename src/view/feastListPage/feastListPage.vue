@@ -1,6 +1,6 @@
 <script setup>
 import FeastCard from "@/components/FeastCard.vue";
-import { getFeastListApi,getNameListApi } from "@/api/feast";
+import { getFeastListApi } from "@/api/feast";
 import { ref } from "vue";
 let feastTeamList = ref([]);
 const currentPage = ref(1);
@@ -11,10 +11,6 @@ const getFeastList = async (page, pageSize) => {
     let res = await getFeastListApi(page, pageSize);
     feastTeamList.value = res.data.list;
     total.value = res.data.total;
-    for (let i = 0; i < feastTeamList.value.length; i++) {
-        let data = await getNameListApi(feastTeamList.value[i].user_id);
-        feastTeamList.value[i].username = data.nickname;
-    }
 };
 
 getFeastList(currentPage.value, pageSize.value);
