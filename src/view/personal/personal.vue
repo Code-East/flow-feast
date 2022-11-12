@@ -30,7 +30,7 @@ const handleFormatError = file => {
 let userinfo = JSON.parse(localStorage.getItem("userinfo"));
 //拼接地址的code
 let userdata;
-if (userinfo.address) { //判断是否有地址
+if (userinfo.address != null) { //判断是否有地址 有地址加入地址过滤
   const addressTextList = userinfo.address.split("/");
   let addressCodeList = [];
   addressCodeList[0] = TextToCode[addressTextList[0]].code;
@@ -38,9 +38,10 @@ if (userinfo.address) { //判断是否有地址
   addressCodeList[2] =
     TextToCode[addressTextList[0]][addressTextList[1]][addressTextList[2]].code;
   userdata = reactive({ ...userinfo, address: addressCodeList });
+}else{
+  //没地址直接赋值
+  userdata = reactive({ ...userinfo });
 }
- userdata = reactive({ ...userinfo });
-
 //编辑状态
 const picEdit = ref(false);
 const usernameEdit = ref(false);

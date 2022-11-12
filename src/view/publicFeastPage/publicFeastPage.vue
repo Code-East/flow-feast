@@ -62,7 +62,7 @@ const updataHandler = async (fid) => {
       <div class="title">宴席管理</div>
       <el-button type="warning" @click="publicHandler">发布宴席</el-button>
     </div>
-    <div class="feast_list" v-if="store.personalFeastList">
+    <div class="feast_list" v-if="store.personalFeastList.length > 0">
       <el-timeline>
         <el-timeline-item
           v-for="item in store.personalFeastList"
