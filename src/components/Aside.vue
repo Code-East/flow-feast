@@ -4,7 +4,7 @@
       <div class="center">
         <div class="user_pic">
           <img
-            src="https://img1.baidu.com/it/u=3178057158,4110048229&fm=253&fmt=auto&app=138&f=JPEG"
+            :src="userinfo.userpic"
             alt="用户头像"
           />
         </div>
@@ -29,25 +29,33 @@
 </template>
 
 <script setup>
-
-import { ref, computed } from "vue";
+import { ref,reactive, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-import indexStore from '@/store/index_store'
+import indexStore from "@/store/index_store";
 const store = indexStore();
 const router = useRouter();
-const userinfo = JSON.parse(localStorage.getItem("userinfo"));
-if (!userinfo) {
+const userinfo = ref();
+userinfo.value = JSON.parse(localStorage.getItem("userinfo"));
+watch(
+  () => store.userinfo,
+  newval => {
+    // debugger
+    userinfo.value = newval;
+  },
+  {deep:true}
+);
+if (!userinfo.value) {
   ElMessage({
     type: "error",
     message: "获取用户信息失败！"
   });
 }
 const username = computed(() => {
-  return userinfo.userType == 0 ? userinfo.nickname : userinfo.tname;
+  return userinfo.value.userType == 0 ? userinfo.value.nickname : userinfo.value.tname;
 });
-const feastTitle = userinfo.userType === "0" ? "发布宴席" : "承接宴席";
-const priceTitle = userinfo.userType === "0" ? "消费金额" : "总计金额";
+const feastTitle = userinfo.value.userType === "0" ? "发布宴席" : "承接宴席";
+const priceTitle = userinfo.value.userType === "0" ? "消费金额" : "总计金额";
 //退出登入
 const loginOut = () => {
   //清空本地储存

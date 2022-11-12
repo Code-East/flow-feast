@@ -129,8 +129,8 @@ const submitForm = formEl => {
     :rules="registerRules"
     @keydown.enter="submitForm(ruleFormRef)"
   >
-    <el-form-item label="用户名" prop="username">
-      <el-input placeholder="请输入用户名" v-model="formData.username"></el-input>
+    <el-form-item label="账号" prop="username">
+      <el-input placeholder="请输入账号" v-model="formData.username"></el-input>
     </el-form-item>
 
     <el-form-item label="密码" prop="psw">

@@ -9,6 +9,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 const store = createPinia();
 const app = createApp(App)
+//关闭生产警告
+app.config.warnHandler = (msg,instance,trace) => {}
 //注册所有icon
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)

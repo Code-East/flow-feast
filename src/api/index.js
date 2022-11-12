@@ -11,3 +11,10 @@ export const get_aside_data = () => {
         url:'/index/get_aside_data'
     }) 
 }
+
+export const getUserApi = () => {
+    return request({
+        url:'/index/get_user_data'
+    }) 
+}
+

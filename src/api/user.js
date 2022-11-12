@@ -27,3 +27,13 @@ export const get_code_api = (data) => {
         }
     })
 }
+//修改用户信息
+export const setUserAttribute = (attribute,value) => {
+    return request({
+        url:'/user/set_user_attribute',
+        params:{
+            attribute,
+            value
+        }
+    }) 
+}

@@ -58,7 +58,7 @@ const router = createRouter({
 //定义不需要token 也可以进入的白名单
 const whiteList = ['/login','/notfind'];
 //个人用户才能进的名单
-const userList = ['/index/feast_team_page', '/index/public_feast_page', '/personal', '/index/chat'];
+const userList = ['/index/feast_team_page', '/index/public_feast_page', '/index/personal', '/index/chat'];
 //团队用户才能进的名单
 const feastTeamList = ['/feast_team_admin', '/index/feast_list_page', '/index/chat'];
 

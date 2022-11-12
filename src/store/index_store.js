@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia';
 import { reactive, ref } from 'vue'
 import { get_header_list } from '@/api/index'
-import { get_aside_data } from "@/api/index";
+import { get_aside_data, getUserApi } from "@/api/index";
 const useIndexStore = defineStore('index', () => {
     //头部列表
     const headerList = ref([]);
+    const userinfo = ref({});
     //获取头部列表
     async function getHeaderListAction() {
         try {
@@ -20,6 +21,15 @@ const useIndexStore = defineStore('index', () => {
         } catch (error) {
             console.log(error);
             return;
+        }
+    }
+    //获取用户信息
+    async function getUserData() {
+        const res = await getUserApi();
+        if (res.code === 0) {
+            userinfo.value = res.data;
+            //获取最新的userinfo
+            localStorage.setItem('userinfo',JSON.stringify(userinfo.value));
         }
     }
 
@@ -45,8 +55,10 @@ const useIndexStore = defineStore('index', () => {
         headerList,
         feastCount,
         price,
+        userinfo,
         getHeaderListAction,
-        getAsideData
+        getAsideData,
+        getUserData
     }
 })
 
