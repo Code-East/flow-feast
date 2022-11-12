@@ -6,6 +6,8 @@ import { setUserAttribute } from "@/api/user";
 import indexStore from "@/store/index_store";
 import { ElMessage } from "element-plus";
 import { upyunSignature } from "@/utils/upLoadYun";
+import { addressToCode, addressToText } from '@/utils/addressHandler'
+
 const store = indexStore();
 //地址数据
 const options = regionData;
@@ -14,7 +16,6 @@ const options = regionData;
 const fileData = upyunSignature("/feast/user_pic");
 //上传成功
 const handleSuccess = res => {
-  console.log("上传成功", res.url);
   picEdit.value = true;
   //上传成功后会返回文件地拼接文件地址，将其拼接上又拍云的图片访问的跟地址 存入数据库即可
   userdata.userpic = "http://www.lixiandong.top" + res.url;
@@ -26,17 +27,12 @@ const handleFormatError = file => {
     message: "上传失败！"
   });
 };
-
+//获取locatStorage中的用户信息
 let userinfo = JSON.parse(localStorage.getItem("userinfo"));
 //拼接地址的code
 let userdata;
 if (userinfo.address != null) { //判断是否有地址 有地址加入地址过滤
-  const addressTextList = userinfo.address.split("/");
-  let addressCodeList = [];
-  addressCodeList[0] = TextToCode[addressTextList[0]].code;
-  addressCodeList[1] = TextToCode[addressTextList[0]][addressTextList[1]].code;
-  addressCodeList[2] =
-    TextToCode[addressTextList[0]][addressTextList[1]][addressTextList[2]].code;
+  let addressCodeList = addressToCode(userinfo.address);
   userdata = reactive({ ...userinfo, address: addressCodeList });
 }else{
   //没地址直接赋值
@@ -75,7 +71,6 @@ const cancelHandler = type => {
     case "nickname":
       usernameEdit.value = !usernameEdit.value;
       userdata.nickname = userinfo.nickname;
-      console.log(userinfo.nickname);
       break;
     case "psw":
       pswEdit.value = !pswEdit.value;
@@ -83,7 +78,7 @@ const cancelHandler = type => {
       break;
     case "address":
       addressEdit.value = !addressEdit.value;
-      userdata.address = userinfo.address;
+      userdata.address = addressToCode(userinfo.address);
       break;
   }
 };
@@ -91,12 +86,7 @@ const cancelHandler = type => {
 //点击确认修改内容
 const affirmHandler = async type => {
   if (type == "address") {
-    let address = "";
-    userdata.address.forEach(item => {
-      address = address + CodeToText[item] + "/";
-    });
-    //删除最后的 /
-    address = address.slice(0, address.length - 1);
+    let address = addressToText(userdata.address);
     const res = await setUserAttribute(type, address);
     if (res.code === 0) {
       ElMessage({
