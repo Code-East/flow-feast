@@ -5,11 +5,12 @@ import { get_aside_data, getUserApi } from "@/api/index";
 const useIndexStore = defineStore('index', () => {
     //头部列表
     const headerList = ref([]);
-    const userinfo = ref({});
+    const userdata = ref({});
     //获取头部列表
     async function getHeaderListAction() {
         try {
-            const res = await get_header_list();
+            const userdata = JSON.parse(localStorage.getItem('userinfo'));
+            const res = await get_header_list(userdata);
             //token失效跳转到login
             if (res.code == 400) {
                 return true;
@@ -24,15 +25,14 @@ const useIndexStore = defineStore('index', () => {
         }
     }
     //获取用户信息
-    async function getUserData() {
-        const res = await getUserApi();
+    async function getUserData(userinfo) {
+        const res = await getUserApi(userinfo);
         if (res.code === 0) {
-            userinfo.value = res.data;
+            userdata.value = res.data;
             //获取最新的userinfo
-            localStorage.setItem('userinfo',JSON.stringify(userinfo.value));
+            localStorage.setItem('userinfo',JSON.stringify(userdata.value));
         }
     }
-
     //获取aside所需的数据
     const feastCount = ref(0);
     const price = ref(0);
@@ -55,7 +55,7 @@ const useIndexStore = defineStore('index', () => {
         headerList,
         feastCount,
         price,
-        userinfo,
+        userdata,
         getHeaderListAction,
         getAsideData,
         getUserData

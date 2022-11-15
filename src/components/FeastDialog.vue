@@ -235,6 +235,7 @@ const updataHandler = async () => {
           placeholder="输入宴席描述"
           resize="none"
           rows="4"
+          maxlength = '100'
           :readonly="disable"
         />
       </el-form-item>

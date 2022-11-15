@@ -4,6 +4,7 @@ const props = defineProps({
   feastObj: Object
 });
 const feastData = props.feastObj;
+
 </script>
 
 <template>
@@ -16,7 +17,7 @@ const feastData = props.feastObj;
             <el-icon color="rgb(131, 164, 255)" class="content_icon">
               <Calendar />
             </el-icon>
-            <span class="text">宴席时间:{{feastData.data_time}}</span>
+            <span class="text">宴席时间:{{feastData.date_time}}</span>
             <span class="gap">|</span>
           </div>
           <div>
@@ -67,9 +68,6 @@ const feastData = props.feastObj;
       color: $text-highlight-color;
       font-size: 2em;
       transition: all 0.2s ease-in-out;
-      &:hover {
-        color: $text-bg-hover;
-      }
     }
     .content_tag {
       color: #858585;

@@ -10,11 +10,7 @@ const router = createRouter({
             name: 'login',
             component: () => import('@/view/login/login.vue')
         },
-        {
-            path: '/feast_team_admin',
-            name: 'feastTeamAdmin',
-            component: () => import('@/view/feastTeamAdmin/feastTeamAdmin.vue')
-        },
+        
         {
             path: '/notfind',
             name: 'notFind',
@@ -50,7 +46,24 @@ const router = createRouter({
                     name: 'personal',
                     component: () => import('@/view/personal/personal.vue')
                 },
-
+                {
+                    path: 'feast_team_admin',
+                    name: 'feastTeamAdmin',
+                    component: () => import('@/view/feastTeamAdmin/feastTeamAdmin.vue'),
+                    redirect: {name: 'baseMessage'}, //跳转到下级第一层
+                    children:[
+                        {
+                            path:'base_message',
+                            name:'baseMessage',
+                            component: () => import('@/view/feastTeamAdmin/child/teamBaseMessage.vue'),
+                        },
+                        {
+                            path:'person_admin',
+                            name:'person_admin',
+                            component: () => import('@/view/feastTeamAdmin/child/personAdmin.vue'),
+                        }
+                    ]
+                },
             ]
         }
     ]
@@ -60,7 +73,7 @@ const whiteList = ['/login','/notfind'];
 //个人用户才能进的名单
 const userList = ['/index/feast_team_page', '/index/public_feast_page', '/index/personal', '/index/chat'];
 //团队用户才能进的名单
-const feastTeamList = ['/feast_team_admin', '/index/feast_list_page', '/index/chat'];
+const feastTeamList = ['/index/feast_team_admin','/index/feast_team_admin/base_message','/index/feast_team_admin/person_admin', '/index/feast_list_page', '/index/chat'];
 
 //定义路由前置守卫
 router.beforeEach((to, from, next) => {

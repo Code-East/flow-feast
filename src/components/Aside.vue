@@ -3,10 +3,7 @@
     <div class="user">
       <div class="center">
         <div class="user_pic">
-          <img
-            :src="userinfo.userpic"
-            alt="用户头像"
-          />
+          <img :src="userPic" alt="用户头像" />
         </div>
         <div class="username">{{username}}</div>
       </div>
@@ -29,22 +26,24 @@
 </template>
 
 <script setup>
-import { ref,reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import indexStore from "@/store/index_store";
 const store = indexStore();
 const router = useRouter();
-const userinfo = ref();
-userinfo.value = JSON.parse(localStorage.getItem("userinfo"));
+const user = JSON.parse(localStorage.getItem("userinfo"));
+const userinfo = ref(user);
+
+//监听用户信息的变化
 watch(
-  () => store.userinfo,
+  () => store.userdata,
   newval => {
-    // debugger
     userinfo.value = newval;
   },
-  {deep:true}
+  { deep: true }
 );
+//判断是否有用户
 if (!userinfo.value) {
   ElMessage({
     type: "error",
@@ -52,7 +51,14 @@ if (!userinfo.value) {
   });
 }
 const username = computed(() => {
-  return userinfo.value.userType == 0 ? userinfo.value.nickname : userinfo.value.tname;
+  return userinfo.value.userType == 0
+    ? userinfo.value.nickname
+    : userinfo.value.tname;
+});
+const userPic = computed(() => {
+  return userinfo.value.userType == 0
+    ? userinfo.value.userpic
+    : userinfo.value.teampic;
 });
 const feastTitle = userinfo.value.userType === "0" ? "发布宴席" : "承接宴席";
 const priceTitle = userinfo.value.userType === "0" ? "消费金额" : "总计金额";

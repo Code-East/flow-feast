@@ -6,7 +6,8 @@ import { setUserAttribute } from "@/api/user";
 import indexStore from "@/store/index_store";
 import { ElMessage } from "element-plus";
 import { upyunSignature } from "@/utils/upLoadYun";
-import { addressToCode, addressToText } from '@/utils/addressHandler'
+import { addressToCode, addressToText } from "@/utils/addressHandler";
+import Upload from '@/components/Upload.vue'
 
 const store = indexStore();
 //地址数据
@@ -15,26 +16,21 @@ const options = regionData;
 //文件参数 调用utils里面的参数获得
 const fileData = upyunSignature("/feast/user_pic");
 //上传成功
-const handleSuccess = res => {
+const handleSuccess = imgurl => {
   picEdit.value = true;
   //上传成功后会返回文件地拼接文件地址，将其拼接上又拍云的图片访问的跟地址 存入数据库即可
-  userdata.userpic = "http://www.lixiandong.top" + res.url;
+  userdata.userpic = imgurl;
 };
-//上传失败
-const handleFormatError = file => {
-  ElMessage({
-    type: "error",
-    message: "上传失败！"
-  });
-};
+
 //获取locatStorage中的用户信息
 let userinfo = JSON.parse(localStorage.getItem("userinfo"));
 //拼接地址的code
 let userdata;
-if (userinfo.address != null) { //判断是否有地址 有地址加入地址过滤
+if (userinfo.address != null) {
+  //判断是否有地址 有地址加入地址过滤
   let addressCodeList = addressToCode(userinfo.address);
   userdata = reactive({ ...userinfo, address: addressCodeList });
-}else{
+} else {
   //没地址直接赋值
   userdata = reactive({ ...userinfo });
 }
@@ -87,7 +83,15 @@ const cancelHandler = type => {
 const affirmHandler = async type => {
   if (type == "address") {
     let address = addressToText(userdata.address);
-    const res = await setUserAttribute(type, address);
+    if (!address) {
+      ElMessage({
+        type: "warring",
+        message: "修改的内容不能为空！"
+      });
+    }
+    console.log(userdata);
+    const res = await setUserAttribute(type, address, userdata.uid);
+    console.log(res);
     if (res.code === 0) {
       ElMessage({
         type: "success",
@@ -95,20 +99,25 @@ const affirmHandler = async type => {
       });
     }
     //更新store中的userinfo
-    store.getUserData();
+    store.getUserData(userdata);
     //修改编辑状态
     editHandler(type);
     return;
   }
-
-  const res = await setUserAttribute(type, userdata[type]);
+  if (!userdata[type]) {
+      ElMessage({
+        type: "warring",
+        message: "修改的内容不能为空！"
+      });
+    }
+  const res = await setUserAttribute(type, userdata[type], userdata.uid);
   if (res.code === 0) {
     ElMessage({
       type: "success",
       message: res.message
     });
     //更新store中的userinfo
-    store.getUserData();
+    store.getUserData(userdata);
     //修改编辑状态
     editHandler(type);
   } else {
@@ -125,22 +134,12 @@ const affirmHandler = async type => {
     <div class="personal_content">
       <div class="item_box">
         <span>用户头像</span>
-        <el-upload
-          ref="uploadRef"
-          class="avatar-uploader"
-          accept="image/png, image/jpeg, image/jpg"
-          action="http://v0.api.upyun.com/image-feast.b0.aicdn.com"
-          :disabled="!picEdit"
-          :data="fileData"
-          :on-success="handleSuccess"
-          :on-error="handleFormatError"
-          :show-file-list="false"
-        >
-          <img v-if="userdata.userpic" :src="userdata.userpic" class="avatar_img" />
-          <el-icon v-else class="avatar-uploader-icon">
-            <Plus />
-          </el-icon>
-        </el-upload>
+        <Upload 
+          :disabled = 'picEdit' 
+          :imgSrc = "userdata.userpic" 
+          :fileData = "fileData"
+          @successHandler = "handleSuccess"
+        />
         <div class="edit_box" v-show="picEdit">
           <el-button type="info" @click="cancelHandler('userpic')">取消</el-button>
           <el-button type="warning" @click="affirmHandler('userpic')">确定</el-button>
@@ -224,30 +223,30 @@ const affirmHandler = async type => {
       display: block;
     }
   }
-  .avatar-uploader {
-    width: 100px;
-    height: 100px;
-    display: block;
-    border: 2px dashed #8c939d;
-    border-radius: 50%;
-    transition: 0.5s;
-    position: relative;
-    .avatar_img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50px;
-      position: absolute;
-      top: -2px;
-      left: -2px;
-    }
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 100px;
-    height: 100px;
-    text-align: center;
-  }
+  // .avatar-uploader {
+  //   width: 100px;
+  //   height: 100px;
+  //   display: block;
+  //   border: 2px dashed #8c939d;
+  //   border-radius: 50%;
+  //   transition: 0.5s;
+  //   position: relative;
+  //   .avatar_img {
+  //     width: 100px;
+  //     height: 100px;
+  //     border-radius: 50px;
+  //     position: absolute;
+  //     top: -2px;
+  //     left: -2px;
+  //   }
+  // }
+  // .avatar-uploader-icon {
+  //   font-size: 28px;
+  //   color: #8c939d;
+  //   width: 100px;
+  //   height: 100px;
+  //   text-align: center;
+  // }
   ::v-deep .el-upload-list {
     // 上传进度条位置
     position: relative;

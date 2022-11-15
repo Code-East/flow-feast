@@ -1,7 +1,6 @@
 import { TextToCode, CodeToText } from "element-china-area-data";
 //text to code
 export const addressToCode = (addressText) => {
-    console.log();
     const addressTextList = addressText.split('/');
     let addressCodeList = [];
     addressCodeList[0] = TextToCode[addressTextList[0]].code;
