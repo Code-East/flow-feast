@@ -2,7 +2,10 @@
 import { defineProps, defineEmits, ref } from "vue";
 
 const props = defineProps({
-  disabled: Boolean,
+  disabled: {
+    type:Boolean,
+    default:true
+  },
   imgSrc: String,
   fileData: Object,
   loadStyle: {

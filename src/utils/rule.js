@@ -23,3 +23,34 @@ export const loginRules = reactive({
       { required: true, message: '请输入验证码', trigger: 'blur' },
     ]
 });
+
+//员工表单验证
+export const employeeRules = reactive({
+  name: [
+    { required: true, message: '请填写姓名', trigger: 'blur' },
+    { min: 3, max: 5, message: '姓名必须在3至5个字符', trigger: 'blur' },
+  ],
+  employ_pic:[
+    { required: true, message: '请上传头像', trigger: 'blur' },
+  ],
+  age:[
+    { required: true, message: '请上传头像', trigger: 'blur' },
+  ],
+  sex:[
+    {
+      required: true,
+      message: '请选择性别',
+      trigger: 'change',
+    },
+  ],
+  health_card:[
+    { required: true, message: '请上传健康证', trigger: 'blur' },
+  ],
+  position:[
+    {
+      required: true,
+      message: '请选职位',
+      trigger: 'change',
+    },
+  ]
+})

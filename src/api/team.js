@@ -25,7 +25,55 @@ export const getTeamDataApi = (id) => {
 export const setTeamDataApi = (data) => {
     return request({
         url: '/team/set_team_data',
-        method:'post',
+        method: 'post',
         data
+    })
+}
+
+//获取团队成员
+export const getTeamPersonApi = (data) => {
+    return request({
+        url: '/team/get_team_person',
+        params: data
+    })
+}
+
+
+//增加团队成员
+export const addEmployeeApi = (person) => {
+    return request({
+        url: '/team/add_employee',
+        method: 'post',
+        data: person
+    })
+}
+
+//获取单个团队成员
+export const getEmployeeDetailApi = (eid) => {
+    return request({
+        url: "/team/get_employee_detail",
+        params: {
+            eid
+        }
+    })
+}
+
+//修改成员信息
+export const uploadEmployeeApi = (data) => {
+    return request({
+        url: "/team/upload_employee",
+        method: 'post',
+        data
+    })
+}
+
+//删除成员
+export const deleteEmployApi = (eid) => {
+    return request({
+        url: "/team/delete_employee", 
+        method:'delete',
+        params: {
+            eid
+        }
     })
 }

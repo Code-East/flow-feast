@@ -2,15 +2,16 @@
 import FeastCard from "@/components/FeastCard.vue";
 import { getFeastListApi } from "@/api/feast";
 import { ref } from "vue";
-let feastTeamList = ref([]);
+let feastList = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(5);
 const total = ref(0);
 
 const getFeastList = async (page, pageSize) => {
     let res = await getFeastListApi(page, pageSize);
-    feastTeamList.value = res.data.list;
+    feastList.value = res.data.list;
     total.value = res.data.total;
+    console.log(feastList.value, total.value);
 };
 
 getFeastList(currentPage.value, pageSize.value);
@@ -23,7 +24,7 @@ const changePage = nowPage => {
 <template>
   <div class="feast_page">
     <div class="feast_list">
-      <FeastCard v-for="(item,i) in feastTeamList" :key="item.fid" :feastObj = item></FeastCard>
+      <FeastCard v-for="(item,i) in feastList" :key="item.fid" :feastObj = item></FeastCard>
     </div>
     <div class="pagination">
       <el-pagination
