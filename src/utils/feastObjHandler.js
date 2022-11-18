@@ -2,7 +2,7 @@ import { TextToCode } from 'element-china-area-data'
 
 export const feastObjHandler = (feastObj) => {
     const data = {
-        fid:'',
+        fid: '',
         minScale: 0,
         maxScale: 0,
         province: [],
@@ -35,4 +35,33 @@ export const feastObjHandler = (feastObj) => {
 
     return data;
 
+}
+
+export const statusHandler = list => {
+    for (let i = 0; i < list.length; i++) {
+        switch (list[i].status) {
+            case 0:
+                list[i].cStatus = '审核中';
+                list[i].color = '#f39c12'
+                break;
+            case 1:
+                list[i].cStatus = '审核通过';
+                list[i].color = '#27ae60'
+                break;
+            case 2:
+                list[i].cStatus = '审核未通过';
+                list[i].color = '#e74c3c'
+                break;
+            case 3:
+                list[i].cStatus = '进行中';
+                list[i].color = '#409eff'
+                break;
+            case 4:
+                list[i].cStatus = '已完成';
+                list[i].color = '#2ecc71'
+                break;
+        }
+
+    }
+    return list;
 }

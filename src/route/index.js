@@ -10,7 +10,7 @@ const router = createRouter({
             name: 'login',
             component: () => import('@/view/login/login.vue')
         },
-        
+
         {
             path: '/notfind',
             name: 'notFind',
@@ -42,6 +42,11 @@ const router = createRouter({
                     component: () => import('@/view/publicFeastPage/publicFeastPage.vue')
                 },
                 {
+                    path: 'feast_page',
+                    name: 'feastPage',
+                    component: () => import('@/view/feastPage/feastPage.vue')
+                },
+                {
                     path: 'personal',
                     name: 'personal',
                     component: () => import('@/view/personal/personal.vue')
@@ -50,16 +55,16 @@ const router = createRouter({
                     path: 'feast_team_admin',
                     name: 'feastTeamAdmin',
                     component: () => import('@/view/feastTeamAdmin/feastTeamAdmin.vue'),
-                    redirect: {name: 'baseMessage'}, //跳转到下级第一层
-                    children:[
+                    redirect: { name: 'baseMessage' }, //跳转到下级第一层
+                    children: [
                         {
-                            path:'base_message',
-                            name:'baseMessage',
+                            path: 'base_message',
+                            name: 'baseMessage',
                             component: () => import('@/view/feastTeamAdmin/child/teamBaseMessage.vue'),
                         },
                         {
-                            path:'person_admin',
-                            name:'person_admin',
+                            path: 'person_admin',
+                            name: 'person_admin',
                             component: () => import('@/view/feastTeamAdmin/child/personAdmin.vue'),
                         }
                     ]
@@ -69,11 +74,23 @@ const router = createRouter({
     ]
 })
 //定义不需要token 也可以进入的白名单
-const whiteList = ['/login','/notfind'];
+const whiteList = ['/login', '/notfind'];
 //个人用户才能进的名单
-const userList = ['/index/feast_team_page', '/index/public_feast_page', '/index/personal', '/index/chat'];
+const userList = [
+    '/index/feast_team_page', 
+    '/index/public_feast_page', 
+    '/index/personal', 
+    '/index/chat'
+];
 //团队用户才能进的名单
-const feastTeamList = ['/index/feast_team_admin','/index/feast_team_admin/base_message','/index/feast_team_admin/person_admin', '/index/feast_list_page', '/index/chat'];
+const feastTeamList = [
+    '/index/feast_team_admin', 
+    '/index/feast_team_admin/base_message', 
+    '/index/feast_team_admin/person_admin', 
+    '/index/feast_list_page', 
+    '/index/chat',
+    '/index/feast_page'
+];
 
 //定义路由前置守卫
 router.beforeEach((to, from, next) => {
@@ -82,25 +99,25 @@ router.beforeEach((to, from, next) => {
         const userType = JSON.parse(localStorage.getItem('userinfo')).userType;
         //如果有登入 还要去登入页面就 把它跳转到index页面
         if (to.path === '/login') {
-            if (userType === '0' ) {
+            if (userType === '0') {
                 next('/index/feast_team_page')
-            }else{
+            } else {
                 next('/index/feast_list_page');
             }
-        }else if(whiteList.includes(to.path)){
+        } else if (whiteList.includes(to.path)) {
             next();
-        }else {
+        } else {
             //如果没去login页面 判断用户的类型
             if (userType === '0' && userList.includes(to.path)) { //是个人用户且在个人用户的名单内 允许跳转
                 next();
-            }else if (userType === '1' && feastTeamList.includes(to.path)) {//是团队用户且在团队用户的名单内 允许跳转
+            } else if (userType === '1' && feastTeamList.includes(to.path)) {//是团队用户且在团队用户的名单内 允许跳转
                 next();
-            }else{
-                 //不满足条件去404
-                 next('/notfind');
+            } else {
+                //不满足条件去404
+                next('/notfind');
             }
-               
-            
+
+
         }
     } else { //没有token 也就是没有登入
         //判断是否在白名单中 在就让他跳转 不在就跳转到login页面

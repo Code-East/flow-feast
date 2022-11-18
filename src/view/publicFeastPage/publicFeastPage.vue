@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref } from "vue";
 import FesatDialog from "@/components/FeastDialog.vue";
 import useFeastStore from "@/store/feast_store";
 import { deleteFeastApi } from "@/api/feast";

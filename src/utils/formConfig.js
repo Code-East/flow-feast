@@ -48,3 +48,70 @@ export const employeeFormConfig = [
         ]
     }
 ];
+
+export const feastFormConfig = [
+    {
+        field: "nickname",
+        label: "发布人",
+    },
+    {
+        field: "scale",
+        label: "宴席规格",
+    },
+    {
+        field: "price",
+        label: "价位",
+    },
+    {
+        field: "address",
+        label: "地址",
+    },
+    {
+        field: "date_time",
+        label: "举办时间",
+    },
+    {
+        field: "status",
+        label: "状态",
+    },
+];
+
+export const completeFeastFormConfig = [
+    {
+        field: "nickname",
+        label: "发布人",
+    },
+    {
+        field: "scale",
+        label: "宴席规格",
+    },
+    {
+        field: "price",
+        label: "价位",
+    },
+    {
+        field: "address",
+        label: "地址",
+    },
+    {
+        field: "date_time",
+        label: "举办时间",
+    },
+    {
+        field: "status",
+        label: "状态",
+    },
+    {
+        field: "environment",
+        type: "upload",
+        label: "环境拍照",
+        savePath: '/feast/environment',
+        style: {
+            width: 250 + 'px',
+            height: 125 + 'px',
+            borderRadius: 0 + 'px',
+            display: 'flex',
+            justifyContent: 'center'
+        }
+    },
+];

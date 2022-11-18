@@ -11,6 +11,7 @@
             :show-password="item.type === 'password'"
             :model-value="modelValue[`${item.field}`]"
             @update:modelValue="valueChange($event, item.field)"
+            :readonly="item.disable"
           ></el-input>
         </template>
         <template v-else-if="item.type === 'select'">
@@ -18,6 +19,7 @@
             :placeholder="item.placeholder"
             :model-value="modelValue[`${item.field}`]"
             @update:modelValue="valueChange($event, item.field)"
+            :disabled="item.disable"
           >
             <el-option
               v-for="option in item.options"
@@ -33,14 +35,21 @@
             :fileData="upyunSignature(item.savePath)"
             @successHandler="successHandler"
             :loadStyle="item.style"
+            :disabled = "!item.disable"
           ></Upload>
         </template>
         <template v-else-if="item.type === 'radio'">
           <el-radio-group :model-value="modelValue[`${item.field}`]" 
-          @update:modelValue="valueChange($event, item.field)">
+          @update:modelValue="valueChange($event, item.field)"
+          >
             <el-radio label="0">女</el-radio>
             <el-radio label="1">男</el-radio>
           </el-radio-group>
+        </template>
+        <template v-else>
+          <div>
+            <span>{{modelValue[`${item.field}`]}}</span>
+          </div>
         </template>
       </el-form-item>
     </template>
