@@ -18,13 +18,13 @@ const props = defineProps({
 });
 const emit = defineEmits(["submitDialog", "hindDialog"]);
 //最小宴席数
-const minScale = ref(1);
-//最大宴席数
-const maxScale = ref(1);
-//拼接宴席规模
-const scale = computed(() => {
-  return minScale.value + "~" + maxScale.value;
-});
+// const minScale = ref(1);
+// //最大宴席数
+// const maxScale = ref(1);
+// //拼接宴席规模
+// const scale = computed(() => {
+//   return minScale.value + "~" + maxScale.value;
+// });
 //省市区 地址
 const province = ref("");
 //详细街道
@@ -44,8 +44,8 @@ const clearForm = () => {
   for (const item in form) {
     form[item] = "";
   }
-  minScale.value = "";
-  maxScale.value = "";
+  // minScale.value = "";
+  // maxScale.value = "";
   province.value = "";
   street.value = "";
 };
@@ -61,14 +61,15 @@ watch(
   newval => {
     //判断当前为什么操作
     if ((props.title = "查看宴席" && newval != undefined)) {
-      minScale.value = newval.minScale;
-      maxScale.value = newval.maxScale;
+      // minScale.value = newval.minScale;
+      // maxScale.value = newval.maxScale;
       province.value = newval.province;
       street.value = newval.street;
       form.price = newval.price;
       form.date_time = newval.date_time;
       form.description = newval.description;
       form.user_id = newval.user_id;
+      form.scale = newval.scale;
     }
   },
   {
@@ -107,7 +108,7 @@ const ruleForm = () => {
   }
   form.address += street.value;
   //加入范围
-  form.scale = scale.value;
+  // form.scale = scale.value;
   //加入user_id属性
   const userinfo = JSON.parse(localStorage.getItem("userinfo"));
   form.user_id = userinfo.uid;
@@ -190,9 +191,8 @@ const updataHandler = async () => {
   <el-dialog v-model="dialogVisible" :title="title" @close="dialogClose" width="35%">
     <el-form :model="form" ref="ruleFormRef">
       <el-form-item label="宴席规模">
-        <el-input-number v-model="minScale" controls-position="right" :readonly="disable" min="1" />
-        <span class="gap">至</span>
-        <el-input-number v-model="maxScale" controls-position="right" :readonly="disable" min="1" />
+        <el-input-number v-model="form.scale" controls-position="right" :readonly="disable" min="1" />
+        <span style="margin-left:10px">桌</span>
       </el-form-item>
 
       <el-form-item label="宴席价位">

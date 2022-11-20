@@ -2,14 +2,14 @@
   <div class="header">
     <slot name="header"></slot>
   </div>
-  <el-form ref="ruleFormRef" :labelWidth="labelWidth" :rules="rules">
+  <el-form ref="ruleFormRef">
     <template v-for="item in formItems" :key="item.label">
-      <el-form-item v-if="!item.isHidden" :label="item.label" :style="itemStyle" :prop="item.prop">
+      <el-form-item :label="item.label">
         <template v-if="item.type === 'input' || item.type === 'password'">
           <el-input
             :placeholder="item.placeholder"
             :show-password="item.type === 'password'"
-            :model-value="modelValue[`${item.field}`]"
+            v-model="modelValue[`${item.field}`]"
             @update:modelValue="valueChange($event, item.field)"
             :readonly="item.disable"
           ></el-input>
@@ -35,16 +35,59 @@
             :fileData="upyunSignature(item.savePath)"
             @successHandler="successHandler"
             :loadStyle="item.style"
-            :disabled = "!item.disable"
+            :disabled="!item.disable"
           ></Upload>
         </template>
         <template v-else-if="item.type === 'radio'">
-          <el-radio-group :model-value="modelValue[`${item.field}`]" 
-          @update:modelValue="valueChange($event, item.field)"
+          <el-radio-group
+            :model-value="modelValue[`${item.field}`]"
+            @update:modelValue="valueChange($event, item.field)"
           >
             <el-radio label="0">女</el-radio>
             <el-radio label="1">男</el-radio>
           </el-radio-group>
+        </template>
+        <template v-else-if="item.type === 'image'">
+          <el-image
+            :style="item.style"
+            :src="modelValue[`${item.field}`]"
+            :preview-src-list="[modelValue[`${item.field}`]]"
+            :initial-index="0"
+            fit="fill"
+          />
+        </template>
+        <template v-else-if="item.type === 'date'">
+          <el-date-picker
+            v-model="modelValue[`${item.field}`]"
+            type="date"
+            @update:modelValue="valueChange($event, item.field)"
+            placeholder="选择举办日期"
+          />
+        </template>
+        <template v-else-if="item.type === 'number'">
+          <el-input-number
+            v-model="modelValue[`${item.field}`]"
+            :min="1"
+            controls-position="right"
+            @update:modelValue="valueChange($event, item.field)"
+          />
+        </template>
+        <template v-else-if="item.type === 'address'">
+          <el-cascader
+            :options="regionData"
+            v-model="modelValue[`${item.field}`]"
+            placeholder="请选择地址"
+            style="width:100%"
+            @update:modelValue="valueChange($event, item.field)"
+          ></el-cascader>
+        </template>
+        <template v-else-if="item.type === 'textarea'">
+          <el-input
+            type="textarea"
+            :placeholder="item.placeholder"
+            v-model="modelValue[`${item.field}`]"
+            @update:modelValue="valueChange($event, item.field)"
+          ></el-input>
         </template>
         <template v-else>
           <div>
@@ -63,23 +106,13 @@
 import { defineProps, defineEmits } from "vue";
 import { upyunSignature } from "@/utils/upLoadYun";
 import Upload from "@/components/Upload.vue";
+import { regionData } from "element-china-area-data";
 const props = defineProps({
   formItems: {
     type: Array,
     default: []
   },
-  labelWiddth: {
-    type: String,
-    default: "120px"
-  },
-  itemStyle: {
-    type: Object,
-    default: {
-      padding: "10px 20px"
-    }
-  },
   modelValue: Object, //绑定表单的每个数据
-  rules:Object, //表单校验
 });
 const emit = defineEmits(["update:modelValue"]);
 
@@ -106,5 +139,8 @@ const successHandler = imgSrc => {
 .footer {
   display: flex;
   justify-content: flex-end;
+}
+.el-dialog__body{
+  padding: 0;
 }
 </style>

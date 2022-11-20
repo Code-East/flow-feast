@@ -1,3 +1,4 @@
+//员工表单
 export const employeeFormConfig = [
     {
         field: "employ_pic",
@@ -48,7 +49,7 @@ export const employeeFormConfig = [
         ]
     }
 ];
-
+//查看宴席表单
 export const feastFormConfig = [
     {
         field: "nickname",
@@ -75,7 +76,7 @@ export const feastFormConfig = [
         label: "状态",
     },
 ];
-
+//完成表单结构
 export const completeFeastFormConfig = [
     {
         field: "nickname",
@@ -115,3 +116,126 @@ export const completeFeastFormConfig = [
         }
     },
 ];
+//宴席团队表单
+export const teamMessageFormConfid = [
+    {
+        field: 'teampic',
+        type: 'image',
+        label: '团队图片',
+        style: {
+            width: 250 + 'px',
+            height: 125 + 'px',
+        }
+    },
+    {
+        field: 'tname',
+        label: '团队名称'
+    },
+    {
+        field: 'address',
+        label: '团队地址',
+    },
+    {
+        field: 'create_time',
+        label: '创建时间'
+    },
+    {
+        field: 'team_scale',
+        label: '团队规模'
+    },
+    {
+        field: 'team_price',
+        label: '价位'
+    },
+    {
+        field: 'team_introduction',
+        label: '团队简介'
+    },
+    {
+        field: 'business_license',
+        type: 'image',
+        label: '营业执照',
+        style: {
+            width: 400 + 'px',
+            height: 200 + 'px',
+        }
+    }
+]
+//查看员工表单
+export const checkEmployeeFormConfig = [
+    {
+        field: 'employ_pic',
+        type: 'image',
+        label: '头像',
+        style: {
+            width: 100 + 'px',
+            height: 100 + 'px',
+            borderRadius: 50 + 'px'
+        }
+    },
+    {
+        field: 'name',
+        label: '名称'
+    },
+    {
+        field: 'sex',
+        label: '性别'
+    },
+    {
+        field: 'age',
+        label: '年龄'
+    },
+    {
+        field: 'position',
+        label: '职位'
+    },
+    {
+        field: 'health_card',
+        label: '健康证',
+        type: 'image',
+        style: {
+            width: 300 + 'px',
+            height: 150 + 'px',
+        }
+    },
+]
+//宴席下单表单结构
+export const buyFeastFormConfig = [
+    {
+        field:'date_time',
+        type:'date',
+        label:'举办日期',
+        disable:false
+    },
+    {
+        field:'scale',
+        type:'number',
+        label:'宴席规格',
+        disable:false
+    },
+    {
+        field:'price',
+        label:'价格',
+        disable:false
+    },
+    {
+        field:'address',
+        type:'address',
+        label:'地址',
+        disable:false
+    },
+    {
+        field:'street',
+        type:'input',
+        label:'街道',
+        placeholder:'请输入街道',
+        disable:false
+    },
+    {
+        field:'description',
+        type:'textarea',
+        label:'描述',
+        placeholder:'请输入描述',
+        disable:false
+    },
+]

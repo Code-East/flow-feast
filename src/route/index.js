@@ -47,6 +47,11 @@ const router = createRouter({
                     component: () => import('@/view/feastPage/feastPage.vue')
                 },
                 {
+                    path: 'team_detail',
+                    name: 'teamDetail',
+                    component: () => import('@/view/teamDetail/teamDetail.vue')
+                },
+                {
                     path: 'personal',
                     name: 'personal',
                     component: () => import('@/view/personal/personal.vue')
@@ -80,7 +85,8 @@ const userList = [
     '/index/feast_team_page', 
     '/index/public_feast_page', 
     '/index/personal', 
-    '/index/chat'
+    '/index/chat',
+    '/index/team_detail'
 ];
 //团队用户才能进的名单
 const feastTeamList = [

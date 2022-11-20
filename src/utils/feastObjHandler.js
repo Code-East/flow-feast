@@ -14,9 +14,9 @@ export const feastObjHandler = (feastObj) => {
     }
     data.fid = feastObj.fid;
     //拆分规模
-    const scaleList = feastObj.scale.split('~');
-    data.minScale = scaleList[0];
-    data.maxScale = scaleList[1];
+    // const scaleList = feastObj.scale.split('~');
+    // data.minScale = scaleList[0];
+    // data.maxScale = scaleList[1];
     //处理地址拆分
     const addressList = feastObj.address.split('/');
     //加入省code
@@ -28,11 +28,12 @@ export const feastObjHandler = (feastObj) => {
     //具体街道
     data.street = addressList[3];
     //其他的正常赋值
+    data.scale = feastObj.scale;
     data.price = feastObj.price;
     data.date_time = feastObj.date_time;
     data.description = feastObj.description;
     data.user_id = feastObj.user_id;
-
+    
     return data;
 
 }

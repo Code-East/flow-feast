@@ -1,24 +1,29 @@
 <script setup>
 import { defineProps } from "vue";
+import { useRouter } from 'vue-router'
 const props = defineProps({
-  teamObj:Object
+  teamObj: Object
 });
+const router = useRouter();
 const teamData = props.teamObj;
+const toTeamdeatil = (id) => {
+  router.push({
+    path:`/index/team_detail`,
+    query:{
+      id
+    }
+  })
+};
 </script>
 
 <template>
   <div class="article_card">
-    <div class="img_box">
-      <img
-        src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimgres.crsky.com%2Fcrsky%2F59%2F290500-202104011758066065992e35fea.jpg&refer=http%3A%2F%2Fimgres.crsky.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1669623423&t=c7dd135109aceb1e7d30feabbcc904e9"
-        alt="文章图片"
-      />
+    <div class="img_box" @click="toTeamdeatil(teamData.tid)">
+      <img :src="teamData.teampic" alt="文章图片" />
       <!-- v-lazyload="v.image" -->
     </div>
     <div class="card_content">
-      <a href="javascript:;">
-        {{teamData.tname}}
-      </a>
+      <a href="javascript:;" @click="toTeamdeatil(teamData.tid)">{{teamData.tname}}</a>
       <div class="content_tag">
         <div class="content_time">
           <div>

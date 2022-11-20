@@ -77,3 +77,13 @@ export const deleteEmployApi = (eid) => {
         }
     })
 }
+
+//获取团队信息和人员
+export const getTeamMessageApi = (id) => {
+    return request({
+        url:'/team/get_team_message',
+        params:{
+            id
+        }
+    })
+}
