@@ -42,6 +42,11 @@ const router = createRouter({
                     component: () => import('@/view/publicFeastPage/publicFeastPage.vue')
                 },
                 {
+                    path:'order',
+                    name:'order',
+                    component:()=>import('@/view/order/order.vue')
+                },
+                {
                     path: 'feast_page',
                     name: 'feastPage',
                     component: () => import('@/view/feastPage/feastPage.vue')
@@ -86,7 +91,8 @@ const userList = [
     '/index/public_feast_page', 
     '/index/personal', 
     '/index/chat',
-    '/index/team_detail'
+    '/index/team_detail',
+    '/index/order'
 ];
 //团队用户才能进的名单
 const feastTeamList = [
@@ -95,7 +101,8 @@ const feastTeamList = [
     '/index/feast_team_admin/person_admin', 
     '/index/feast_list_page', 
     '/index/chat',
-    '/index/feast_page'
+    '/index/feast_page',
+    '/index/order'
 ];
 
 //定义路由前置守卫

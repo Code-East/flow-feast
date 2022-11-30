@@ -80,3 +80,26 @@ export const completeFeastApi = (fid, environment) => {
         }
     })
 }
+
+//下单宴席
+export const paymentFeastApi = (data) => {
+    return request({
+        url: "/feast/payment_feast",
+        method: 'post',
+        data
+    })
+}
+
+//付款宴席
+export const alipayApi = (order,total) => {
+    return request({
+        url: '/alipay',
+        method: 'post',
+        data: {
+            order,
+            total
+        }
+    })
+}
+
+

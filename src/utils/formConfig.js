@@ -202,40 +202,61 @@ export const checkEmployeeFormConfig = [
 //宴席下单表单结构
 export const buyFeastFormConfig = [
     {
-        field:'date_time',
-        type:'date',
-        label:'举办日期',
-        disable:false
+        field: 'date_time',
+        type: 'date',
+        label: '举办日期',
+        disable: false
     },
     {
-        field:'scale',
-        type:'number',
-        label:'宴席规格',
-        disable:false
+        field: 'scale',
+        type: 'number',
+        label: '宴席规格',
+        disable: false
     },
     {
-        field:'price',
-        label:'价格',
-        disable:false
+        field: 'price',
+        label: '价格',
+        disable: false
     },
     {
-        field:'address',
-        type:'address',
-        label:'地址',
-        disable:false
+        field: 'address',
+        type: 'address',
+        label: '地址',
+        disable: false
     },
     {
-        field:'street',
-        type:'input',
-        label:'街道',
-        placeholder:'请输入街道',
-        disable:false
+        field: 'street',
+        type: 'input',
+        label: '街道',
+        placeholder: '请输入街道',
+        disable: false
     },
     {
-        field:'description',
-        type:'textarea',
-        label:'描述',
-        placeholder:'请输入描述',
-        disable:false
+        field: 'description',
+        type: 'textarea',
+        label: '描述',
+        placeholder: '请输入描述',
+        disable: false
+    },
+]
+//退款
+export const refundFormConfig = [
+    {
+        field: 'refund_type',
+        type: 'select',
+        label: '退款原因',
+        options: [
+            { label: '未办理', value: 0 },
+            { label: '办理脏乱差', value: 1 },
+            { label: '服务质量差', value: 2 }
+        ]
+    },
+    {
+        field: 'refund_context',
+        type: 'textarea',
+        label: '描述',
+        style:{
+            height:200 + 'px'
+        }
     },
 ]

@@ -2,6 +2,9 @@
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { getTeamMessageApi, getEmployeeDetailApi } from "@/api/team";
+import { paymentFeastApi, alipayApi } from "@/api/feast";
+import { addressToText } from "@/utils/addressHandler";
+import { ElMessage } from "element-plus";
 import {
   teamMessageFormConfid,
   checkEmployeeFormConfig,
@@ -9,6 +12,7 @@ import {
 } from "@/utils/formConfig";
 import Myform from "@/components/Myform.vue";
 
+const userinfo = JSON.parse(localStorage.getItem("userinfo"));
 const route = useRoute();
 const id = route.query.id;
 const teamData = ref({});
@@ -49,10 +53,11 @@ const getTeamMessage = async id => {
 };
 getTeamMessage(id);
 
-//点击成员展示成员信息
 const employeeData = ref({});
 const dialogVisivle = ref(false);
 const dialogTitle = ref("成员信息");
+
+//点击成员展示成员信息
 const checkEmploy = async eid => {
   dialogTitle.value = "成员信息";
   const res = await getEmployeeDetailApi(eid);
@@ -100,12 +105,34 @@ const formData = computed(() => {
 });
 //总价
 const total = computed(() => {
-    return feastData.value.price * feastData.value.scale;
+  return feastData.value.price * feastData.value.scale;
 });
-
-const paymentHandler =()=>{
-    console.log(feastData.value);
-}
+//下单处理函数
+const paymentHandler = async () => {
+  if (formData.value.address) {
+    //加入user_id
+    formData.value.user_id = userinfo.uid;
+    //拼接地址
+    formData.value.address =
+      addressToText(formData.value.address) + "/" + formData.value.street;
+    // 删除街道
+    delete formData.value.street;
+  }
+  const res = await paymentFeastApi(formData.value);
+  const result = await alipayApi(formData.value, total.value);
+  window.open(result.result);
+  if (res.code === 0) {
+    //清空对象
+    buyFeastFormConfig.forEach(item => {
+      feastData.value[item.field] = "";
+    });
+    ElMessage({
+      type: "success",
+      message: "下单成功 正在跳转支付！"
+    });
+    dialogVisivle.value = false;
+  }
+};
 </script>
 
 <template>

@@ -1,16 +1,22 @@
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, ref } from "vue";
+import  MyForm  from "@/components/MyForm.vue";
+import { feastFormConfig } from '@/utils/formConfig'
 const props = defineProps({
   feastObj: Object
 });
 const feastData = props.feastObj;
-
+//dialog显示
+const dialogVisivle = ref(false);
+const titleClick = () => {
+  dialogVisivle.value = true;
+};
 </script>
 
 <template>
   <div class="article_card">
     <div class="card_content">
-      <a href="javascript:;">{{feastData.nickname}}发布的宴席</a>
+      <a href="javascript:;" @click="titleClick">{{feastData.nickname}}发布的宴席</a>
       <div class="content_tag">
         <div class="content_time">
           <div>
@@ -38,8 +44,11 @@ const feastData = props.feastObj;
       <div class="content_text">{{feastData.description}}</div>
     </div>
     <div class="totalk">
-        <a href="#">和我联系</a>
-      </div>
+      <a href="#">和我联系</a>
+    </div>
+    <el-dialog v-model="dialogVisivle" title="宴席详情" width="30%">
+      <MyForm></MyForm>
+    </el-dialog>
   </div>
 </template>
 
@@ -68,6 +77,9 @@ const feastData = props.feastObj;
       color: $text-highlight-color;
       font-size: 2em;
       transition: all 0.2s ease-in-out;
+      &:hover {
+        color: $btn-bg;
+      }
     }
     .content_tag {
       color: #858585;
@@ -103,10 +115,10 @@ const feastData = props.feastObj;
     }
   }
 }
-.totalk{
-    float: right;
-    a{
-      font-size: 14px;
-    }
+.totalk {
+  float: right;
+  a {
+    font-size: 14px;
   }
+}
 </style>

@@ -87,6 +87,7 @@
             :placeholder="item.placeholder"
             v-model="modelValue[`${item.field}`]"
             @update:modelValue="valueChange($event, item.field)"
+            :style="item.style"
           ></el-input>
         </template>
         <template v-else>

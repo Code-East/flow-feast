@@ -206,6 +206,7 @@ const affirmHandler = async type => {
   padding: 20px 30px;
   background-color: #fff;
   border-radius: $box_radius;
+  box-shadow: $card-box-shadow;
   .item_box {
     display: flex;
     align-items: center;

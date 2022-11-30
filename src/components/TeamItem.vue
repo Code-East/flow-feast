@@ -1,18 +1,18 @@
 <script setup>
 import { defineProps } from "vue";
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 const props = defineProps({
   teamObj: Object
 });
 const router = useRouter();
 const teamData = props.teamObj;
-const toTeamdeatil = (id) => {
+const toTeamdeatil = id => {
   router.push({
-    path:`/index/team_detail`,
-    query:{
+    path: `/index/team_detail`,
+    query: {
       id
     }
-  })
+  });
 };
 </script>
 
@@ -49,6 +49,11 @@ const toTeamdeatil = (id) => {
         </div>
       </div>
       <div class="content_text">{{teamData.team_introduction}}</div>
+      <div>
+        <div class="totalk">
+          <a href="#" style="font-size:14px">和我联系</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -128,6 +133,12 @@ const toTeamdeatil = (id) => {
       -webkit-box-orient: vertical;
       font-size: 16px;
     }
+  }
+}
+.totalk {
+  float: right;
+  a {
+    font-size: 14px;
   }
 }
 </style>
