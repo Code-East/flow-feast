@@ -93,7 +93,7 @@ export const paymentFeastApi = (data) => {
 //付款宴席
 export const alipayApi = (order,total) => {
     return request({
-        url: '/alipay',
+        url: '/feast/alipay',
         method: 'post',
         data: {
             order,
@@ -102,4 +102,14 @@ export const alipayApi = (order,total) => {
     })
 }
 
+//团队用户
+export const teamAcceptFeastApi = (fid, tid) => {
+    return request({
+        url:'/feast/team_accept_feast',
+        params:{
+            fid,
+            tid
+        }
+    })
+}
 

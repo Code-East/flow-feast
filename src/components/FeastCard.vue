@@ -1,15 +1,15 @@
 <script setup>
 import { defineProps, ref } from "vue";
-import  MyForm  from "@/components/MyForm.vue";
-import { feastFormConfig } from '@/utils/formConfig'
+import MyForm from "@/components/MyForm.vue";
+import { feastFormConfig } from "@/utils/formConfig";
 const props = defineProps({
   feastObj: Object
 });
 const feastData = props.feastObj;
-//dialog显示
-const dialogVisivle = ref(false);
+
+const emit = defineEmits(["cardClick"]);
 const titleClick = () => {
-  dialogVisivle.value = true;
+  emit('cardClick',feastData);
 };
 </script>
 
@@ -46,9 +46,6 @@ const titleClick = () => {
     <div class="totalk">
       <a href="#">和我联系</a>
     </div>
-    <el-dialog v-model="dialogVisivle" title="宴席详情" width="30%">
-      <MyForm></MyForm>
-    </el-dialog>
   </div>
 </template>
 

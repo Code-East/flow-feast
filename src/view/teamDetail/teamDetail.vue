@@ -109,6 +109,18 @@ const total = computed(() => {
 });
 //下单处理函数
 const paymentHandler = async () => {
+  if (
+    !formData.value.address ||
+    !formData.value.street ||
+    !formData.value.date_time ||
+    !formData.value.description
+  ) {
+    ElMessage({
+      type: "warning",
+      message: "请将信息填写完整！"
+    });
+    return;
+  }
   if (formData.value.address) {
     //加入user_id
     formData.value.user_id = userinfo.uid;
@@ -119,18 +131,19 @@ const paymentHandler = async () => {
     delete formData.value.street;
   }
   const res = await paymentFeastApi(formData.value);
-  const result = await alipayApi(formData.value, total.value);
-  window.open(result.result);
+
   if (res.code === 0) {
-    //清空对象
-    buyFeastFormConfig.forEach(item => {
-      feastData.value[item.field] = "";
-    });
     ElMessage({
       type: "success",
       message: "下单成功 正在跳转支付！"
     });
     dialogVisivle.value = false;
+    const result = await alipayApi(formData.value, total.value);
+    window.open(result.result);
+    //清空对象
+    buyFeastFormConfig.forEach(item => {
+      feastData.value[item.field] = "";
+    });
   }
 };
 </script>

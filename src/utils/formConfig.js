@@ -75,6 +75,10 @@ export const feastFormConfig = [
         field: "status",
         label: "状态",
     },
+    {
+        field: "description",
+        label: "描述",
+    },
 ];
 //完成表单结构
 export const completeFeastFormConfig = [
