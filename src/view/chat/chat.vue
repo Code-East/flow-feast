@@ -1,73 +1,52 @@
 <script setup>
-const list = [
-  {
-    class: "message_item_left",
-    content: "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_right",
-    content: "哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_left",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_right",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_left",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_left",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_left",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_right",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_right",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_right",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_left",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-  {
-    class: "message_item_right",
-    content:
-      "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
-  },
-];
-list.forEach(item => {
-  const n = item.content.length;
-  let h;
-  if (n <= 14) {
-    h = 36
-  }else{
-    h = Math.ceil(n / 14) * 24;
+import { ElMessage } from "element-plus";
+import { getChatListApi } from "@/api/chat";
+import { computed, ref } from "vue";
+const userinfo = JSON.parse(localStorage.getItem("userinfo")) || "";
+//存放所有数据
+const chatList = ref({});
+//存放当前聊天框数据
+const nowChatList = ref([]);
+//当前聊天的id
+const nowTalkID = ref();
+const getChatList = async userinfo => {
+  const res = await getChatListApi(userinfo);
+  if (res.code === 0) {
+    let list = [];
+    //将传过来的map 变为list的数组
+    for (const key in res.data) {
+      let arr = res.data[key];
+      list.push(arr);
+    }
+    chatList.value = list;
+    nowTalkID.value = list[0][0].id;
+    nowChatList.value = list[0];
+  } else {
+    ElMessage({
+      type: "error",
+      message: "出错误了"
+    });
   }
-  item.h = h;
+};
+getChatList(userinfo);
+//点击切换聊天用户
+const cutUser = id => {
+  nowTalkID.value = id;
+  chatList.value.forEach((item) => {
+    if (item[0].id == id) {
+      nowChatList.value = item;
+    }else{
+      return false;
+    }
+  });
+};
+//算出当前用户的头像
+const userpic = computed(() => {
+  if (userinfo.userType == 0) {
+    return userinfo.userpic;
+  } else {
+    return userinfo.teampic;
+  }
 });
 </script>
 
@@ -76,12 +55,14 @@ list.forEach(item => {
     <div class="user_list">
       <ul>
         <el-scrollbar height="600px">
-          <li>
-            <img
-              src="https://img1.baidu.com/it/u=3178057158,4110048229&fm=253&fmt=auto&app=138&f=JPEG"
-              alt="用户头像"
-            />
-            <a href="#">user1</a>
+          <li
+            v-for="(item,i) in chatList"
+            :key="i"
+            :class="{active:(item[0].id == nowTalkID)}"
+            @click="cutUser(item[0].id)"
+          >
+            <img :src="item[0].pic" alt="用户头像" />
+            <a href="#">{{item[0].tname}}</a>
           </li>
         </el-scrollbar>
       </ul>
@@ -90,19 +71,20 @@ list.forEach(item => {
     <div class="chat_box">
       <div class="message_box">
         <el-scrollbar height="400px">
-          <template v-for="item in list">
-            <div class="message_item" :style="{height:item.h + 'px'}">
-              <!-- class="message_item_left" -->
-              <div :class="item.class">
-                <img
-                  src="https://img1.baidu.com/it/u=3178057158,4110048229&fm=253&fmt=auto&app=138&f=JPEG"
-                  alt="用户头像"
-                />
-                <!-- <div class="message">哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈</div> -->
+          <div class="message_item" v-for="(item,i) in nowChatList" :key="item.cid">
+            <div class="message_item_left" v-if="(item.sender === nowTalkID)">
+              <div class="left_message_box">
+                <img :src="item.pic" alt="用户头像" />
                 <div class="message">{{item.content}}</div>
               </div>
             </div>
-          </template>
+            <div class="message_item_right" v-else>
+              <div class="right_message_box">
+                <div class="message">{{item.content}}</div>
+                <img :src="userpic" alt="用户头像" />
+              </div>
+            </div>
+          </div>
         </el-scrollbar>
       </div>
       <div class="inp_box">
@@ -163,6 +145,7 @@ list.forEach(item => {
         text-align: center;
         line-height: 50px;
         font-size: 18px;
+        color: #7f8c8d;
       }
     }
   }
@@ -182,49 +165,43 @@ list.forEach(item => {
     margin-bottom: 5px;
     .message_item {
       width: 100%;
-      // height: 75px;
-      margin-bottom: 10px;
-      position: relative;
+      margin: 10px 0;
       .message_item_left {
-        width: 50%;
+        width: 100%;
         display: flex;
-        position: absolute;
-        left: 0px;
-        align-items: center;
-        word-break: break-all;
-        word-wrap: break-word;
-        .message {
-          // height: 30px;
-          background-color: #f5f6fa;
-          padding: 5px 10px;
-          font-size: 16px;
-          border-radius: 10px;
-          margin: 0 5px;
-          position: absolute;
-          top: 3px;
-          left: 40px;
+        justify-content: flex-start;
+        .left_message_box {
+          display: flex;
+          width: 70%;
+          justify-content: flex-start;
+          .message {
+            background-color: #f5f6fa;
+            padding: 5px 10px;
+            font-size: 16px;
+            border-radius: 10px;
+            margin: 0 5px;
+            display: flex;
+            align-items: center;
+          }
         }
       }
       .message_item_right {
-        width: 50%;
+        width: 100%;
         display: flex;
-        flex-direction: row-reverse;
-        position: absolute;
-        right: 0px;
-        align-items: center;
-        word-break: break-all;
-        /* 在长单词或 URL 地址内部进行换行。 在一行末尾处遇到长单词会自动换行去下一行展示 */
-        word-wrap: break-word;
-        .message {
-          // height: 30px;
-          background-color: #f1c40f;
-          padding: 5px 10px;
-          font-size: 16px;
-          border-radius: 10px;
-          margin: 0 5px;
-          position: absolute;
-          top: 3px;
-          right: 40px;
+        justify-content: end;
+        .right_message_box {
+          display: flex;
+          width: 70%;
+          justify-content: end;
+          .message {
+            background-color: #f1c40f;
+            padding: 5px 10px;
+            font-size: 16px;
+            border-radius: 10px;
+            margin: 0 5px;
+            display: flex;
+            align-items: center;
+          }
         }
       }
       img {
@@ -243,6 +220,12 @@ list.forEach(item => {
     display: flex;
     margin: 15px;
     float: right;
+  }
+}
+.active {
+  background-color: #ecf0f1;
+  a {
+    color: #2980b9 !important;
   }
 }
 </style>
