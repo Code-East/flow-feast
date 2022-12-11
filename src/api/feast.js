@@ -103,11 +103,12 @@ export const alipayApi = (order,total) => {
 }
 
 //团队用户
-export const teamAcceptFeastApi = (fid, tid) => {
+export const teamAcceptFeastApi = (feastData, tid) => {
     return request({
         url:'/feast/team_accept_feast',
-        params:{
-            fid,
+        method:"post",
+        data:{
+            feastData,
             tid
         }
     })

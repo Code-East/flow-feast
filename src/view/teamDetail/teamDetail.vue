@@ -131,15 +131,16 @@ const paymentHandler = async () => {
     delete formData.value.street;
   }
   const res = await paymentFeastApi(formData.value);
-
+  const newFeastData = res.data;
   if (res.code === 0) {
     ElMessage({
       type: "success",
       message: "下单成功 正在跳转支付！"
     });
     dialogVisivle.value = false;
-    const result = await alipayApi(formData.value, total.value);
-    window.open(result.result);
+    const result = await alipayApi(newFeastData, total.value);
+    // window.open(result.result);
+    location.href = result.result;
     //清空对象
     buyFeastFormConfig.forEach(item => {
       feastData.value[item.field] = "";

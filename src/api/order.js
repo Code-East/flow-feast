@@ -71,3 +71,12 @@ export const completeOrderApi = (oid) => {
         }
     })
 }
+
+//付款
+export const paymentOrderApi = (orderData) => {
+    return request({
+        url:'/order/order_payment',
+        method:'post',
+        data:orderData
+    })
+}

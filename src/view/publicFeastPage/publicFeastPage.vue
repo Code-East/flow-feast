@@ -74,7 +74,7 @@ const updataHandler = async (fid) => {
           <el-card>
             <div class="card">
               <div class="content">
-                <h4>举办时间为{{item.date_time}} &nbsp;&nbsp; 地点：{{item.address}}</h4>
+                <h4>宴席ID:{{item.fid}}&nbsp; 举办时间为{{item.date_time}} &nbsp;&nbsp; 地点：{{item.address}}</h4>
                 <p>{{item.description}}</p>
                 <span :style="{fontSize:12+'px',color:item.color}">{{item.cStatus}}</span>
               </div>

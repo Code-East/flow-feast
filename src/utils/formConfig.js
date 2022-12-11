@@ -264,3 +264,30 @@ export const refundFormConfig = [
         }
     },
 ]
+//查看宴席表单
+export const teamCheckFeastConfig = [
+    {
+        field: "nickname",
+        label: "发布人",
+    },
+    {
+        field: "scale",
+        label: "宴席规格",
+    },
+    {
+        field: "price",
+        label: "价位",
+    },
+    {
+        field: "address",
+        label: "地址",
+    },
+    {
+        field: "date_time",
+        label: "举办时间",
+    },
+    {
+        field: "description",
+        label: "描述",
+    },
+];

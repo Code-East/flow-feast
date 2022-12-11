@@ -9,7 +9,8 @@ import {
   getRefundMessageApi,
   allowRefundApi,
   rejectRefundApi,
-  completeOrderApi
+  completeOrderApi,
+  paymentOrderApi
 } from "@/api/order";
 import { ElMessage } from "element-plus";
 
@@ -174,6 +175,12 @@ const completeOrder = oid => {
     }
   });
 };
+//去付款
+const toPayment = async (orderData) => {
+  const res = await paymentOrderApi(orderData);
+  console.log(res);
+  location.href = res.result;
+}
 </script>
 
 <template>
@@ -200,6 +207,13 @@ const completeOrder = oid => {
             link
             type="primary"
             size="small"
+            v-if="scope.row.order_status == '待付款' && userinfo.userType == '0'"
+            @click="toPayment(scope.row)"
+          >去付款</el-button>
+          <el-button
+            link
+            type="primary"
+            size="small"
             v-if="scope.row.order_status != '已完成' && userinfo.userType == '0'"
             @click="completeOrder(scope.row.oid)"
           >完成</el-button>
@@ -214,7 +228,7 @@ const completeOrder = oid => {
             link
             type="primary"
             size="small"
-            v-if="scope.row.order_status == '已付款' && userinfo.userType === '1'"
+            v-if="(scope.row.order_status === '已付款' || scope.row.order_status === '待付款') && userinfo.userType === '1'"
           >暂无操作</el-button>
         </template>
       </el-table-column>

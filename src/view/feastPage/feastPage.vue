@@ -134,7 +134,8 @@ const formConfig = computed(() => {
                   :style="{fontSize:12+'px',color:item.color,marginBottom:10+'px',fontWeight:'bold'}"
                 >{{item.cStatus}}</p>
                 <h4>
-                  <span style="font-size:16px;margin-right:5px;font-weight:bold">{{item.nickname}}</span>
+                  宴席ID:{{item.fid}}&nbsp;
+                  <span style="font-size:16px;font-weight:bold">{{item.nickname}}</span>
                   的宴席 举办时间为:{{item.date_time}} 地点为:{{item.address}}
                 </h4>
               </div>

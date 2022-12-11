@@ -25,9 +25,10 @@ export const employeeTableConfig = [
 //订单表结构
 export const orderTableConfig = [
   {
-    prop: "oid",
-    label: "订单编号",
-    width: "135"
+    prop: "feast_id",
+    label: "对应宴席",
+    width: "135",
+    fixed:'left'
   },
   {
     prop: "tname",

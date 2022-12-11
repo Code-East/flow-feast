@@ -1,7 +1,7 @@
 <template>
   <el-table :data="tableData" stripe style="width: 100%">
     <template v-for="(item,i) in strcture" :key="item.prop">
-        <el-table-column :prop="item.prop" :label="item.label" :width="item.width" />
+        <el-table-column :prop="item.prop" :label="item.label" :width="item.width" :fixed = "item.fixed"/>
     </template>
     <slot></slot>
   </el-table>
