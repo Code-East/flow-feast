@@ -1,26 +1,60 @@
 <script setup>
 import { ElMessage } from "element-plus";
-import { getChatListApi } from "@/api/chat";
-import { computed, ref } from "vue";
+import {
+  getChatListApi,
+  getChatUserListApi,
+  getNowChatListApi
+} from "@/api/chat";
+import { computed, nextTick, onBeforeUnmount, ref } from "vue";
 const userinfo = JSON.parse(localStorage.getItem("userinfo")) || "";
+let userID = userinfo.userType == 0 ? userinfo.uid : userinfo.tid;
 //存放所有数据
 const chatList = ref({});
 //存放当前聊天框数据
 const nowChatList = ref([]);
 //当前聊天的id
 const nowTalkID = ref();
-const getChatList = async userinfo => {
-  const res = await getChatListApi(userinfo);
+const nowTalkPic = ref('');
+//#region
+// const getChatList = async userinfo => {
+//   const res = await getChatListApi(userinfo);
+//   if (res.code === 0) {
+//     let list = [];
+//     //将传过来的map 变为list的数组
+//     for (const key in res.data) {
+//       let arr = res.data[key];
+//       list.push(arr);
+//     }
+//     chatList.value = list;
+//     nowTalkID.value = list[0][0].id;
+//     nowChatList.value = list[0];
+//   } else {
+//     ElMessage({
+//       type: "error",
+//       message: "出错误了"
+//     });
+//   }
+// };
+// getChatList(userinfo);
+//#endregion
+
+//获取当前正在聊天用户的聊天记录
+const getNowChatList = async (sender, receiver) => {
+  const res = await getNowChatListApi(sender, receiver);
   if (res.code === 0) {
-    let list = [];
-    //将传过来的map 变为list的数组
-    for (const key in res.data) {
-      let arr = res.data[key];
-      list.push(arr);
-    }
-    chatList.value = list;
-    nowTalkID.value = list[0][0].id;
-    nowChatList.value = list[0];
+    nowChatList.value = res.data;
+  }
+};
+
+const chatUserList = ref([]);
+//获取当前聊过天的用户列表
+const getChatUserList = async userinfo => {
+  const res = await getChatUserListApi(userinfo);
+  if (res.code === 0) {
+    chatUserList.value = res.data;
+    nowTalkID.value = res.data[0].id;
+    nowTalkPic.value = res.data[0].pic;
+    getNowChatList(nowTalkID.value,userID);
   } else {
     ElMessage({
       type: "error",
@@ -28,17 +62,21 @@ const getChatList = async userinfo => {
     });
   }
 };
-getChatList(userinfo);
+getChatUserList(userinfo);
+
 //点击切换聊天用户
-const cutUser = id => {
-  nowTalkID.value = id;
-  chatList.value.forEach((item) => {
-    if (item[0].id == id) {
-      nowChatList.value = item;
-    }else{
-      return false;
-    }
-  });
+const cutUser = user => {
+  nowTalkID.value = user.id;
+  nowTalkPic.value = user.pic
+  getNowChatList(user.id,userID);
+  // chatList.value.forEach(item => {
+  //   if (item[0].id == id) {
+  //     //切换当前聊天框数据
+  //     nowChatList.value = item;
+  //   } else {
+  //     return false;
+  //   }
+  // });
 };
 //算出当前用户的头像
 const userpic = computed(() => {
@@ -48,6 +86,61 @@ const userpic = computed(() => {
     return userinfo.teampic;
   }
 });
+
+//聊天内容
+const content = ref("");
+//连接scoket服务器
+const socket = io("http://localhost:3001");
+//上线聊天服务器 发送当前用户id到后端
+socket.emit("online", userID);
+
+//点击发送按钮
+const sendClick = () => {
+  if (content.value == "") {
+    //为空谈出
+    return false;
+  } else {
+    //聊天数据对象
+    const data = {};
+    //如果当前用户是个人用户
+    if (userinfo.userType == 0) {
+      //传入的user_id 就为 当前的userID
+      data.user_id = userID;
+      //传入的team_id 就为 当前聊天的nowTalkID
+      data.team_id = nowTalkID.value;
+    } else {
+      //如果当前用户是团队用户
+      //传入的user_id 就为 当前聊天的nowTalkID
+      data.user_id = nowTalkID.value;
+      //传入的team_id 就为 当前的userID
+      data.team_id = userID;
+    }
+    //sender和revicer一样的
+    data.sender = userID;
+    data.receiver = nowTalkID.value;
+    data.userType = userinfo.userType;
+    data.content = content.value;
+    //发送信息
+    socket.emit("message", data);
+    //清空消息
+    content.value = "";
+  }
+};
+
+// const scrollbar = ref('scrollbar');
+// console.log(scrollbar);
+// nextTick(()=>{
+//   scrollbar.scrollTo(400,400);
+// })
+//监听接收信息
+socket.on("message", data => {
+  //加入信息到当前聊天
+  nowChatList.value.push(data);
+});
+//离开前发送离开信息到后端
+onBeforeUnmount(() => {
+  socket.emit("leave", userID);
+});
 </script>
 
 <template>
@@ -56,13 +149,14 @@ const userpic = computed(() => {
       <ul>
         <el-scrollbar height="600px">
           <li
-            v-for="(item,i) in chatList"
+            v-for="(item,i) in chatUserList"
             :key="i"
-            :class="{active:(item[0].id == nowTalkID)}"
-            @click="cutUser(item[0].id)"
+            :class="{active:(item.id == nowTalkID)}"
+            @click="cutUser(item)"
           >
-            <img :src="item[0].pic" alt="用户头像" />
-            <a href="#">{{item[0].tname}}</a>
+            <img :src="item.pic" alt="用户头像" />
+            <a href="#">{{item.name}}</a>
+            <!-- <a href="#" v-else>{{item[0].nickname}}</a> -->
           </li>
         </el-scrollbar>
       </ul>
@@ -70,11 +164,11 @@ const userpic = computed(() => {
 
     <div class="chat_box">
       <div class="message_box">
-        <el-scrollbar height="400px">
+        <el-scrollbar height="400px" ref="scrollbar">
           <div class="message_item" v-for="(item,i) in nowChatList" :key="item.cid">
             <div class="message_item_left" v-if="(item.sender === nowTalkID)">
               <div class="left_message_box">
-                <img :src="item.pic" alt="用户头像" />
+                <img :src="nowTalkPic" alt="用户头像" />
                 <div class="message">{{item.content}}</div>
               </div>
             </div>
@@ -90,7 +184,7 @@ const userpic = computed(() => {
       <div class="inp_box">
         <div class="text_box">
           <el-input
-            v-model="textarea"
+            v-model="content"
             :rows="5"
             type="textarea"
             placeholder="输入信息"
@@ -100,7 +194,7 @@ const userpic = computed(() => {
         </div>
         <div class="btn_box">
           <el-button type="info">清空</el-button>
-          <el-button type="primary">发送</el-button>
+          <el-button type="primary" @click="sendClick">发送</el-button>
         </div>
       </div>
     </div>
