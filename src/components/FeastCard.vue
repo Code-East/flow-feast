@@ -1,15 +1,28 @@
 <script setup>
 import { defineProps, ref } from "vue";
-import MyForm from "@/components/MyForm.vue";
-import { feastFormConfig } from "@/utils/formConfig";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const props = defineProps({
   feastObj: Object
 });
 const feastData = props.feastObj;
-
 const emit = defineEmits(["cardClick"]);
 const titleClick = () => {
-  emit('cardClick',feastData);
+  emit("cardClick", feastData);
+};
+
+const concatMe = data => {
+  const chatData = {
+    id: data.user_id,
+    name: data.nickname,
+    pic: data.userpic
+  };
+  router.push({
+    path: "/index/chat",
+    query: {
+      data: JSON.stringify(chatData)
+    }
+  });
 };
 </script>
 
@@ -19,6 +32,13 @@ const titleClick = () => {
       <a href="javascript:;" @click="titleClick">{{feastData.nickname}}发布的宴席</a>
       <div class="content_tag">
         <div class="content_time">
+          <div>
+            <el-icon color="rgb(131, 164, 255)" class="content_icon">
+              <Sunset />
+            </el-icon>
+            <span class="text">宴席ID:{{feastData.fid}}</span>
+            <span class="gap">|</span>
+          </div>
           <div>
             <el-icon color="rgb(131, 164, 255)" class="content_icon">
               <Calendar />
@@ -44,7 +64,7 @@ const titleClick = () => {
       <div class="content_text">{{feastData.description}}</div>
     </div>
     <div class="totalk">
-      <a href="#">和我联系</a>
+      <a href="#" @click="concatMe(feastData)">和我联系</a>
     </div>
   </div>
 </template>

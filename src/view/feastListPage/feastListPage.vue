@@ -52,7 +52,7 @@ const acceptFeast = async () => {
 
 <template>
   <div class="feast_page">
-    <div class="feast_list" v-if="(feastList.length > 1)">
+    <div class="feast_list" v-if="(feastList.length > 0)">
       <FeastCard
         v-for="(item,i) in feastList"
         :key="item.fid"

@@ -1,60 +1,61 @@
 <script setup>
 import { ElMessage } from "element-plus";
-import {
-  getChatListApi,
-  getChatUserListApi,
-  getNowChatListApi
-} from "@/api/chat";
-import { computed, nextTick, onBeforeUnmount, ref } from "vue";
+import { getChatUserListApi, getNowChatListApi } from "@/api/chat";
+import { computed, onBeforeUnmount, ref } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+let routeChatObj = route.query.data ? JSON.parse(route.query.data) : "";
 const userinfo = JSON.parse(localStorage.getItem("userinfo")) || "";
 let userID = userinfo.userType == 0 ? userinfo.uid : userinfo.tid;
-//存放所有数据
-const chatList = ref({});
 //存放当前聊天框数据
 const nowChatList = ref([]);
 //当前聊天的id
 const nowTalkID = ref();
-const nowTalkPic = ref('');
-//#region
-// const getChatList = async userinfo => {
-//   const res = await getChatListApi(userinfo);
-//   if (res.code === 0) {
-//     let list = [];
-//     //将传过来的map 变为list的数组
-//     for (const key in res.data) {
-//       let arr = res.data[key];
-//       list.push(arr);
-//     }
-//     chatList.value = list;
-//     nowTalkID.value = list[0][0].id;
-//     nowChatList.value = list[0];
-//   } else {
-//     ElMessage({
-//       type: "error",
-//       message: "出错误了"
-//     });
-//   }
-// };
-// getChatList(userinfo);
-//#endregion
+const nowTalkPic = ref("");
+
+//连接scoket服务器
+const socket = io("http://localhost:3001");
+//上线聊天服务器 发送当前用户id到后端
+socket.emit("online", userID);
 
 //获取当前正在聊天用户的聊天记录
 const getNowChatList = async (sender, receiver) => {
   const res = await getNowChatListApi(sender, receiver);
   if (res.code === 0) {
-    nowChatList.value = res.data;
+    nowChatList.value = res.data ? res.data : [];
   }
 };
 
 const chatUserList = ref([]);
 //获取当前聊过天的用户列表
 const getChatUserList = async userinfo => {
+  let isExist = false;
   const res = await getChatUserListApi(userinfo);
   if (res.code === 0) {
-    chatUserList.value = res.data;
-    nowTalkID.value = res.data[0].id;
-    nowTalkPic.value = res.data[0].pic;
-    getNowChatList(nowTalkID.value,userID);
+    if (res.data) {
+      chatUserList.value = res.data;
+      nowTalkID.value = res.data[0].id;
+      nowTalkPic.value = res.data[0].pic;
+      //判断当前路由中是否有对象 有就表明是点击和我联系中跳转过来的
+      chatUserList.value.forEach(item => {
+        if (item.id == routeChatObj.id) {
+          //表示数组中已经存在当前点击过来的用户
+          isExist = true;
+          nowTalkID.value = item.id;
+          nowTalkPic.value = item.pic;
+        }
+      });
+    }
+    if (!isExist && routeChatObj != "") {
+      //当前的用户list中没有点击过来的user且当前传过来的不为空
+      chatUserList.value.push(routeChatObj);
+      nowTalkID.value = routeChatObj.id;
+      nowTalkPic.value = routeChatObj.pic;
+    }
+    if (nowTalkID.value) {
+      getNowChatList(nowTalkID.value, userID);
+    }
   } else {
     ElMessage({
       type: "error",
@@ -67,16 +68,8 @@ getChatUserList(userinfo);
 //点击切换聊天用户
 const cutUser = user => {
   nowTalkID.value = user.id;
-  nowTalkPic.value = user.pic
-  getNowChatList(user.id,userID);
-  // chatList.value.forEach(item => {
-  //   if (item[0].id == id) {
-  //     //切换当前聊天框数据
-  //     nowChatList.value = item;
-  //   } else {
-  //     return false;
-  //   }
-  // });
+  nowTalkPic.value = user.pic;
+  getNowChatList(user.id, userID);
 };
 //算出当前用户的头像
 const userpic = computed(() => {
@@ -89,10 +82,6 @@ const userpic = computed(() => {
 
 //聊天内容
 const content = ref("");
-//连接scoket服务器
-const socket = io("http://localhost:3001");
-//上线聊天服务器 发送当前用户id到后端
-socket.emit("online", userID);
 
 //点击发送按钮
 const sendClick = () => {
@@ -127,11 +116,6 @@ const sendClick = () => {
   }
 };
 
-// const scrollbar = ref('scrollbar');
-// console.log(scrollbar);
-// nextTick(()=>{
-//   scrollbar.scrollTo(400,400);
-// })
 //监听接收信息
 socket.on("message", data => {
   //加入信息到当前聊天
@@ -190,6 +174,7 @@ onBeforeUnmount(() => {
             placeholder="输入信息"
             resize="none"
             class="text_inp"
+            @keydown.enter="sendClick"
           />
         </div>
         <div class="btn_box">

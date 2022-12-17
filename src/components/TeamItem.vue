@@ -14,6 +14,20 @@ const toTeamdeatil = id => {
     }
   });
 };
+
+const concatMe = (data) => {
+  const chatData = {
+    id:data.tid,
+    name:data.tname,
+    pic:data.teampic
+  }
+  router.push({
+    path:'/index/chat',
+    query:{
+      data:JSON.stringify(chatData)
+    }
+  })
+};
 </script>
 
 <template>
@@ -51,7 +65,7 @@ const toTeamdeatil = id => {
       <div class="content_text">{{teamData.team_introduction}}</div>
       <div>
         <div class="totalk">
-          <a href="#" style="font-size:14px">和我联系</a>
+          <a href="#" style="font-size:14px" @click="concatMe(teamData)">和我联系</a>
         </div>
       </div>
     </div>
